@@ -54,6 +54,8 @@ Frontend
 ⚡ JavaScript
 ---
 ### 📁 Project Structure
+
+```text
 ai-summarizer/
 │── app.py
 │── models.py
@@ -72,6 +74,8 @@ ai-summarizer/
 │   ├── js/
 │
 └── README.md
+```
+
 ---
 
 ### ⚙️ Installation & Setup
