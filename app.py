@@ -49,7 +49,7 @@ def load_user(user_id):
 
 
 print("Loading AI Model...")
-summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+summarizer = pipeline("summarization", model="sshleifer/distilbart-cm-12-6")
 print("Model Loaded")
 
 
