@@ -26,6 +26,7 @@ from werkzeug.security import (
 
 from transformers import pipeline
 import yake
+summerizer = None
 
 from config import Config
 from models import db, User, Summary
@@ -184,7 +185,7 @@ def summarize():
     text = text[:3000]
 
     summarizer = get_summarizer()
-    result = get_summarizer(text, max_length=max_len, min_length=min_len, do_sample=False)
+    result = summarizer(text, max_length=max_len, min_length=min_len, do_sample=False)
     summary_text = result[0]["summary_text"]
 
     # TRANSLATION
@@ -285,4 +286,4 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
 
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
