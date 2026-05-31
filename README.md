@@ -52,7 +52,8 @@ Frontend
 🌐 HTML5
 🎨 CSS3
 ⚡ JavaScript
-📁 Project Structure
+---
+### 📁 Project Structure
 ai-summarizer/
 │── app.py
 │── models.py
@@ -86,12 +87,15 @@ python -m venv venv
 Activate:
 
 Windows
-
+bash:
 venv\Scripts\activate
+
 3️⃣ Install dependencies
+
 pip install -r requirements.txt
 4️⃣ Run the application
 
+bash:
 python app.py
 
 Now open:
@@ -110,6 +114,8 @@ Build Command
 pip install -r requirements.txt
 Start Command
 gunicorn app:app
+
+---
 
 🧠 How It Works
 User uploads text or file
@@ -163,10 +169,10 @@ If you like this project:
 
 If you want next upgrade, I can also help you:
 
- Add badges (Flask, Python, Render live status)
+❄️Add badges (Flask, Python, Render live status)
 
- Make it look like a top 1% GitHub project README
- 
- Add GIF demo preview of your app
+❄️Make it look like a top 1% GitHub project README
+
+❄️Add GIF demo preview of your app
 
 Just tell me 👍
