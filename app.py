@@ -48,9 +48,16 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-print("Loading AI Model...")
-summarizer = pipeline("summarization", model="sshleifer/distilbart-cm-12-6")
-print("Model Loaded")
+def get_summarizer():
+    global summarizer
+
+    if summarizer is None:
+        summarizer = pipeline(
+            "summarization",
+            model="sshleifer/distilbart-cnn-12-6"
+        )
+
+    return summarizer
 
 
 @app.route("/")
@@ -176,7 +183,8 @@ def summarize():
 
     text = text[:3000]
 
-    result = summarizer(text, max_length=max_len, min_length=min_len, do_sample=False)
+    summarizer = get_summarizer()
+    result = get_summarizer(text, max_length=max_len, min_length=min_len, do_sample=False)
     summary_text = result[0]["summary_text"]
 
     # TRANSLATION
