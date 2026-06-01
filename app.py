@@ -211,21 +211,21 @@ def summarize():
     else:
         max_len, min_len = 120, 30
 
-        text = text[:3000]
+    text = text[:3000]
         
-        try:
-            summarizer = get_summarizer()
+    try:
+        summarizer = get_summarizer()
 
-            result = summarizer(
-                text,
-                max_length=max_len,
-                min_length=min_len,
-                do_sample=False
-            )
+        result = summarizer(
+            text,
+            max_length=max_len,
+            min_length=min_len,
+            do_sample=False
+        )
 
-            summary_text = result[0]["summary_text"]
+        summary_text = result[0]["summary_text"]
 
-        except Exception as e:
+    except Exception as e:
             flash(f"Error: {str(e)}")
             return redirect(url_for("dashboard"))
 
