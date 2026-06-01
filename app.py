@@ -34,6 +34,8 @@ from werkzeug.security import (
 from transformers import pipeline
 import yake
 summarizer = None
+import torch
+torch.set_num_threads(1) 
 
 from config import Config
 from models import db, User, Summary
@@ -63,12 +65,13 @@ def load_user(user_id):
 
 def get_summarizer():
     global summarizer
-
+    
     if summarizer is None:
         summarizer = pipeline(
             "summarization",
-            model="sshleifer/distilbart-cnn-12-6"
-        )
+            model="sshleifer/distilbart-cnn-6-6",
+            device=-1
+    )
 
     return summarizer
 
@@ -213,10 +216,13 @@ def summarize():
     else:
         max_len, min_len = 120, 30
 
-    text = text[:3000]
+    text = text[:1200]
         
     try:
         summarizer = get_summarizer()
+        
+        if len(text) > 1200:
+            text = text[:1200]
 
         result = summarizer(
             text,
@@ -228,7 +234,7 @@ def summarize():
         summary_text = result[0]["summary_text"]
 
     except Exception as e:
-            flash(f"Error: {str(e)}")
+            flash("summarization failed. Please try shorter text.")
             return redirect(url_for("dashboard"))
 
     # TRANSLATION
