@@ -38,7 +38,6 @@ from models import db, User, Summary
 
 from PyPDF2 import PdfReader
 from reportlab.pdfgen import canvas
-from gtts import gTTS
 import io
 
 app = Flask(__name__)
@@ -324,28 +323,8 @@ def download_pdf():
 @app.route("/download-audio")
 @login_required
 def download_audio():
-
-    latest = Summary.query.filter_by(
-        user_id=current_user.id
-    ).order_by(
-        Summary.id.desc()
-    ).first()
-
-    if not latest:
-        return redirect(url_for("dashboard"))
-
-    tts = gTTS(text=latest.summary_text, lang='en')
-
-    audio_file = io.BytesIO()
-    tts.write_to_fp(audio_file)
-    audio_file.seek(0)
-
-    return send_file(
-        audio_file,
-        as_attachment=True,
-        download_name="summary.mp3",
-        mimetype="audio/mpeg"
-    )
+    flash("Audio feature coming soon")
+    return redirect(url_for("dashboard"))
 
 @app.route("/download-docx")
 @login_required
