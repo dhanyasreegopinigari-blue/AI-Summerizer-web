@@ -8,6 +8,10 @@ from flask import (
     send_file
 )
 
+from flask_mail import Mail, Message
+
+import smtplib
+from email.mime.text import MIMEText
 from docx import Document
 from pptx import Presentation
 from deep_translator import GoogleTranslator
@@ -19,6 +23,7 @@ from flask_login import (
     current_user
 )
 
+from sqlalchemy import text
 from werkzeug.security import (
     generate_password_hash,
     check_password_hash
@@ -26,18 +31,24 @@ from werkzeug.security import (
 
 from transformers import pipeline
 import yake
-summerizer = None
+summarizer = None
 
 from config import Config
 from models import db, User, Summary
 
 from PyPDF2 import PdfReader
 from reportlab.pdfgen import canvas
+from gtts import gTTS
 import io
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+mail = Mail(app)
+
 db.init_app(app)
+
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -121,8 +132,27 @@ def logout():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    summaries = Summary.query.filter_by(user_id=current_user.id).all()
-    return render_template("dashboard.html", summaries=summaries)
+
+    summaries = Summary.query.filter_by(
+        user_id=current_user.id
+    ).all()
+
+    return render_template(
+        "dashboard.html",
+        summaries=summaries,
+        document_count=len(summaries),
+        words_saved=sum(
+            len(s.summary_text.split())
+            for s in summaries
+        ),
+        compression_rate=0,
+        flashcards=[],
+        keywords=[],
+        important_sentences=[],
+        mindmap="",
+        score=None,
+        readability=None
+    )
 
 
 @app.route("/summarize", methods=["POST"])
@@ -182,11 +212,23 @@ def summarize():
     else:
         max_len, min_len = 120, 30
 
-    text = text[:3000]
+        text = text[:3000]
+        
+        try:
+            summarizer = get_summarizer()
 
-    summarizer = get_summarizer()
-    result = summarizer(text, max_length=max_len, min_length=min_len, do_sample=False)
-    summary_text = result[0]["summary_text"]
+            result = summarizer(
+                text,
+                max_length=max_len,
+                min_length=min_len,
+                do_sample=False
+            )
+
+            summary_text = result[0]["summary_text"]
+
+        except Exception as e:
+            flash(f"Error: {str(e)}")
+            return redirect(url_for("dashboard"))
 
     # TRANSLATION
     language = request.form.get("language", "en")
@@ -248,6 +290,15 @@ def summarize():
         mindmap=mindmap
     )
 
+@app.route("/ask-document", methods=["POST"])
+@login_required
+def ask_document():
+
+    question = request.form.get("question")
+
+    flash(f"You asked: {question}")
+
+    return redirect(url_for("dashboard"))
 
 @app.route("/download-pdf")
 @login_required
@@ -270,6 +321,114 @@ def download_pdf():
                      download_name="summary.pdf",
                      mimetype="application/pdf")
 
+@app.route("/download-audio")
+@login_required
+def download_audio():
+
+    latest = Summary.query.filter_by(
+        user_id=current_user.id
+    ).order_by(
+        Summary.id.desc()
+    ).first()
+
+    if not latest:
+        return redirect(url_for("dashboard"))
+
+    tts = gTTS(text=latest.summary_text, lang='en')
+
+    audio_file = io.BytesIO()
+    tts.write_to_fp(audio_file)
+    audio_file.seek(0)
+
+    return send_file(
+        audio_file,
+        as_attachment=True,
+        download_name="summary.mp3",
+        mimetype="audio/mpeg"
+    )
+
+@app.route("/download-docx")
+@login_required
+def download_docx():
+
+    latest = Summary.query.filter_by(
+        user_id=current_user.id
+    ).order_by(
+        Summary.id.desc()
+    ).first()
+
+    if not latest:
+        return redirect(url_for("dashboard"))
+
+    doc = Document()
+    doc.add_heading("AI Generated Summary", level=1)
+    doc.add_paragraph(latest.summary_text)
+
+    file_stream = io.BytesIO()
+    doc.save(file_stream)
+    file_stream.seek(0)
+
+    return send_file(
+        file_stream,
+        as_attachment=True,
+        download_name="summary.docx",
+        mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
+
+@app.route("/download-md")
+@login_required
+def download_md():
+
+    latest = Summary.query.filter_by(
+        user_id=current_user.id
+    ).order_by(
+        Summary.id.desc()
+    ).first()
+
+    if not latest:
+        return redirect(url_for("dashboard"))
+
+    markdown = f"# AI Generated Summary\n\n{latest.summary_text}"
+
+    return send_file(
+        io.BytesIO(markdown.encode()),
+        as_attachment=True,
+        download_name="summary.md",
+        mimetype="text/markdown"
+    )
+
+@app.route("/send-email")
+@login_required
+def send_email():
+
+    latest = Summary.query.filter_by(
+        user_id=current_user.id
+    ).order_by(
+        Summary.id.desc()
+    ).first()
+
+    if not latest:
+        flash("No summary found")
+        return redirect(url_for("dashboard"))
+
+    try:
+        msg = Message(
+            subject="Your AI Generated Summary",
+            sender=app.config["MAIL_USERNAME"],
+            recipients=[current_user.email]
+        )
+
+        msg.body = latest.summary_text
+
+        mail.send(msg)
+
+        flash("Summary sent to your email successfully!")
+
+    except Exception as e:
+        flash(f"Email error: {str(e)}")
+
+    return redirect(url_for("dashboard"))
+
 @app.route("/delete/<int:id>", methods=["POST"])
 @login_required
 def delete(id):
@@ -282,6 +441,7 @@ def delete(id):
     db.session.commit()
 
     return redirect(url_for("dashboard"))
+  
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
