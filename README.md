@@ -1,171 +1,259 @@
-### 🤖 AI Text Summarizer Web App
+# 🚀 AI Summarizer Web Application
 
-🚀 A powerful AI-powered web application that summarizes long documents, PDFs, and text using state-of-the-art NLP models. Built with Flask and Transformers.
+An intelligent AI-powered document summarization platform that helps users quickly understand lengthy documents, articles, reports, and notes. The application supports multiple file formats, generates concise summaries, extracts keywords, creates flashcards, and provides downloadable outputs.
 
----
+## 🌐 Live Demo
 
-### 🌐 Live Demo
-
-🔗 Live Project: 
+https://ai-summerizer.up.railway.app
 
 ---
 
-### ✨ Features
+## 📌 Features
 
-🧠 AI-powered text summarization using BART model
-📄 Upload PDF, DOCX, TXT, PPTX files
-✍️ Manual text input support
-🌍 Multi-language translation (Hindi, Tamil, Telugu, French, German)
-🔑 Keyword extraction using YAKE
-🧾 Flashcard generator for study revision
-⭐ Important sentence extraction
-🧠 AI mind map generation
-📊 Document statistics (words saved, compression rate)
-📚 Summary history with delete option
-📥 Download summary as PDF
-👤 User authentication system (login/register)
-🌙 Clean modern UI with dark mode support
+### 🔐 User Authentication
+- User Registration
+- Secure Login & Logout
+- Password Hashing
+- User-specific Dashboard
+
+### 📄 Document Processing
+Supports:
+- PDF Files
+- DOCX Files
+- PPTX Files
+- TXT Files
+- Direct Text Input
+
+### 🤖 AI-Powered Summarization
+Multiple summary styles:
+- Executive Summary
+- Research Summary
+- Student Notes
+- Meeting Summary
+- Bullet Summary
+- Action-Oriented Summary
+
+### 🌍 Translation Support
+Translate generated summaries into multiple languages using Google Translator.
+
+### 🔑 Smart Insights
+- Keyword Extraction
+- Important Sentence Detection
+- AI Flashcard Generation
+- Mind Map Generation
+
+### 📥 Export Options
+Download summaries as:
+- PDF
+- DOCX
+- Markdown (.md)
+
+### 📊 Dashboard Analytics
+- Total Summaries Generated
+- Documents Uploaded
+- Words Saved
+- Compression Statistics
+- Summary History
+
+### 📧 Email Integration
+Send generated summaries directly to the registered email address.
 
 ---
 
-### 🛠️ Tech Stack
+## 🛠️ Tech Stack
 
-Backend
-🐍 Python
-⚡ Flask
-🔐 Flask-Login
-🧠 HuggingFace Transformers (facebook/bart-large-cnn)
-NLP & AI
-🤖 Transformers
-🔑 YAKE (Keyword Extraction)
-🌍 Deep Translator
-File Processing
-📄 PyPDF2
-📝 python-docx
-📊 python-pptx
-Export & Reports
-📑 ReportLab (PDF generation)
+### Backend
+- Python
+- Flask
+- Flask-Login
+- Flask-SQLAlchemy
+- Flask-Mail
 
-Frontend
-🌐 HTML5
-🎨 CSS3
-⚡ JavaScript
+### AI & NLP
+- Hugging Face Transformers
+- DistilBART (sshleifer/distilbart-cnn-6-6)
+- YAKE Keyword Extraction
+- Deep Translator
+
+### Database
+- SQLite
+
+### Document Processing
+- PyPDF2
+- Python-Docx
+- Python-PPTX
+
+### Export & Reporting
+- ReportLab
+
+### Deployment
+- Railway
+
 ---
-### 📁 Project Structure
 
-```text
-ai-summarizer/
-│── app.py
-│── models.py
-│── config.py
-│── requirements.txt
-│── Procfile
-│── runtime.txt
+## 📂 Project Structure
+
+```bash
+AI-Summarizer/
+│
+├── app.py
+├── config.py
+├── models.py
+├── requirements.txt
+├── runtime.txt
+├── Procfile
 │
 ├── templates/
+│   ├── landing.html
 │   ├── login.html
 │   ├── register.html
-│   ├── dashboard.html
+│   └── dashboard.html
 │
 ├── static/
 │   ├── css/
 │   ├── js/
+│   └── images/
 │
-└── README.md
+└── database.db
 ```
 
 ---
 
-### ⚙️ Installation & Setup
+## ⚙️ Installation
 
-1️⃣ Clone the repository
-git clone https://github.com/your-username/ai-summarizer.git
+### Clone Repository
 
-cd ai-summarizer
+```bash
+git clone https://github.com/your-username/AI-Summerizer-web.git
+cd AI-Summerizer-web
+```
 
-2️⃣ Create virtual environment
-python -m venv venv
+### Create Virtual Environment
 
-Activate:
+```bash
+python -m venv .venv
+```
 
-Windows
-bash:
-venv\Scripts\activate
+### Activate Environment
 
-3️⃣ Install dependencies
+Windows:
 
+```bash
+.venv\Scripts\activate
+```
+
+Mac/Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+### Install Dependencies
+
+```bash
 pip install -r requirements.txt
-4️⃣ Run the application
+```
 
-bash:
+### Run Application
+
+```bash
 python app.py
+```
 
-Now open:
+Application runs at:
 
+```bash
 http://127.0.0.1:5000
-🚀 Deployment (Render)
-Push project to GitHub
-
-Go to 👉 https://render.com
-
-Create New Web Service
-Connect repo
-
-Add:
-Build Command
-pip install -r requirements.txt
-Start Command
-gunicorn app:app
+```
 
 ---
 
-### 🧠 How It Works
-User uploads text or file
-Flask extracts raw content
-BART AI model generates summary
+## 🔑 Environment Variables
 
-Optional:
-Translation 🌍
-Keywords 🔑
-Flashcards 🧾
-Mind map 🧠
-Output displayed on dashboard
+Create a `.env` file or configure environment variables:
 
-Example->
+```env
+SECRET_KEY=your_secret_key
 
-Input:
-Long article or research paper
-
-✨Output:
-
-Short AI-generated summary
-Keywords list
-Flashcards for revision
-Important sentences
-🎯 Future Improvements
-🔊 Text-to-Speech feature
-💬 Chat with PDF (AI assistant)
-📱 Mobile app version
-☁️ PostgreSQL database upgrade
-🧾 OCR support for images
+MAIL_USERNAME=your_email@gmail.com
+MAIL_PASSWORD=your_app_password
+```
 
 ---
 
-### 👨‍💻 Author
+## 🚀 Deployment
 
-💼 CSE (AI & ML) Student
+This project is deployed using Railway.
 
-🌐 GitHub: https://github.com/dhanyasreegopinigari-blue/
+### Production Start Command
 
-📧 Email: dhanyasreegopinigari@gmail.com
+```bash
+gunicorn app:app --bind 0.0.0.0:$PORT
+```
+
+### Runtime
+
+```text
+python-3.13.5
+```
 
 ---
 
-### ⭐ Show Support
+## 📸 Key Functionalities
 
-If you like this project:
+✅ User Authentication
 
-⭐ Star this repository
-🍴 Fork it
-🚀 Share it
+✅ AI Text Summarization
 
+✅ File Upload Support
+
+✅ Keyword Extraction
+
+✅ Flashcard Generation
+
+✅ Mind Map Creation
+
+✅ Translation Support
+
+✅ Email Sharing
+
+✅ PDF Export
+
+✅ DOCX Export
+
+✅ Markdown Export
+
+✅ Summary History
+
+---
+
+## 🔮 Future Enhancements
+
+- PostgreSQL Integration
+- MongoDB Support
+- AI Chat with Uploaded Documents
+- Text-to-Speech Summary Generation
+- OCR for Image Documents
+- Advanced Analytics Dashboard
+- Dark Mode Support
+- Multi-user Collaboration
+
+---
+
+## 👩‍💻 Developer
+
+**Dhanyasree Gopinigari**
+
+Passionate AI & Full-Stack Developer focused on building intelligent applications that simplify information processing and enhance productivity.
+
+GitHub: https://github.com/dhanyasreegopinigari-blue
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+⭐ If you found this project useful, consider giving it a star on GitHub!
