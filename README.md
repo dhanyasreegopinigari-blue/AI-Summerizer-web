@@ -6,9 +6,7 @@
 
 ### 🌐 Live Demo
 
-🔗 Live Project:
-
-(Replace this after deploying on Render)
+🔗 Live Project: 
 
 ---
 
@@ -121,7 +119,7 @@ gunicorn app:app
 
 ---
 
-🧠 How It Works
+### 🧠 How It Works
 User uploads text or file
 Flask extracts raw content
 BART AI model generates summary
@@ -153,7 +151,7 @@ Important sentences
 
 ---
 
-### 👨‍💻 Developer
+### 👨‍💻 Author
 
 💼 CSE (AI & ML) Student
 
@@ -171,12 +169,3 @@ If you like this project:
 🍴 Fork it
 🚀 Share it
 
-If you want next upgrade, I can also help you:
-
-❄️Add badges (Flask, Python, Render live status)
-
-❄️Make it look like a top 1% GitHub project README
-
-❄️Add GIF demo preview of your app
-
-Just tell me 👍
