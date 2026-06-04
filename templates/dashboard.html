@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 
 <html>
+
 <head>
     <title>AI Summarizer Dashboard</title>
 
 
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 
 </head>
 
 <body>
 
-{% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages() %}
 
-{% if messages %}
+    {% if messages %}
 
     {% for message in messages %}
 
-        <div class="alert">
-            {{ message }}
-        </div>
+    <div class="alert">
+        {{ message }}
+    </div>
 
     {% endfor %}
 
-{% endif %}
+    {% endif %}
 
-{% endwith %}
+    {% endwith %}
 
-<nav class="navbar">
+    <nav class="navbar">
 
-</nav>
+    </nav>
 
 </body>
 
@@ -46,8 +46,7 @@
         Logout
     </a>
 
-    <button
-       onclick="toggleTheme()">
+    <button onclick="toggleTheme()">
 
         🌙 Theme
 
@@ -59,458 +58,422 @@
 </nav>
 
 <div class="container">
-<div class="card">
-    <p>
-        Documents Uploaded:
+    <div class="card">
+        <p>
+            Documents Uploaded:
             {{ document_count }}
-    </p>
-
-    <p>
-        Words Saved:
-            {{ words_saved }}
-    </p>
-
-    <p>
-        Compression Rate:
-            {{ compression_rate }}%
-    </p>
-
-    <h2>Your Statistics</h2>
-
-    <p>
-        Total Summaries:
-        {{ summaries|length }}
-    </p>
-    <p>
-        Username:
-        {{ current_user.username }}
-    </p>
-
-    <p>
-        Email:
-        {{ current_user.email }}
-    </p>
-</div>
-
-<div class="card">
-
-    <h1>Generate AI Summary</h1>
-
-    <br>
-
-    <form
-        action="/summarize"
-        method="POST"
-        enctype="multipart/form-data"
-        id="summaryForm">
-
-    <label>Upload Document</label>
-
-    <input
-    type="file"
-    name="file"
-    accept=".pdf,.docx,.txt,.pptx">
-
-    <br><br>
-
-    <label>Summary Length</label>
-
-    <label>
-    Upload Image
-    </label>
-
-    <input
-        type="file"
-        name="image"
-        accept=".jpg,.jpeg,.png">
-
-    <select name="summary_type">
-
-        <option value="executive">
-            Executive Summary
-        </option>
-
-        <option value="bullet">
-            Bullet Points
-        </option>
-
-        <option value="research">
-            Research Summary
-        </option>
-
-        <option value="student">
-            Student Notes
-        </option>
-
-        <option value="meeting">
-            Meeting Notes
-        </option>
-
-        <option value="action">
-            Action Items
-        </option> 
-
-    </select>
-
-    <br><br>
-
-        <textarea
-            id="textInput"
-            name="text"
-            rows="10"
-            placeholder="Paste your article, blog, report, document or notes here..."
-            required></textarea>
-        <div class="counter">
-
-            Estimated Reading Time:
-            <span id="readingTime">
-                 0
-            </span>
-            min
-
-        </div>
-
-        <div class="counter">
-            Characters:
-            <span id="charCount">0</span>
-        </div>
-        <div class="counter">
-
-            Words:
-            <span id="wordCount">0</span>
-
-        </div>
-
-        <br>
-        <label>Translate To</label>
-
-    <select name="language">
-
-    <option value="en">
-        English
-    </option>
-
-    <option value="hi">
-        Hindi
-    </option>
-
-    <option value="te">
-        Telugu
-    </option>
-
-    <option value="ta">
-        Tamil
-    </option>
-
-    <option value="fr">
-        French
-    </option>
-
-    <option value="de">
-        German
-    </option>
-
-</select>
-
-<br><br>
-        <button type="submit">
-            ✨ Generate Summary
-        </button>
-
-        <div
-            class="spinner"
-            id="spinner">
-
-            <div class="loader"></div>
-
-            <p>
-                AI is generating your summary...
-            </p>
-
-        </div>
-
-    </form>
-
-</div>
-
-{% if score %}
-
-<div class="card">
-
-    <h3>
-        🏆 Quality Score:
-        {{ score }}/100
-
-    <br>
-
-    📚 Readability:
-    {{ readability }}/100
-
-    <br>
-
-    📉 Compression:
-    {{ compression_rate }}%
-    </h3>
-
-</div>
-
-<div class="card">
-
-    <h2>
-        👤 User Profile
-    </h2>
-
-    <p>
-    Username:
-    {{ current_user.username }}
-    </p>
-
-    <p>
-    Email:
-    {{ current_user.email }}
-    </p>
-
-    <p>
-    Joined:
-    {{ current_user.created_at }}
-    </p>
-
-</div>
-
-{% endif %}
-
-{% if summary %}
-
-<div class="summary-box">
-    <div class="keywords">
-
-    <h3>
-    🔑 Keywords
-    </h3>
-
-    <ul>
-
-    {% for keyword in keywords %}
-
-    <li>{{ keyword }}</li>
-
-    {% endfor %}
-
-    </ul>
-
-</div>
-
-<div class="important-sentences">
-
-    <h3>
-    ⭐ Important Sentences
-    </h3>
-
-    <ul>
-
-    {% for sentence in important_sentences %}
-
-    <li>{{ sentence }}</li>
-
-    {% endfor %}
-
-    </ul>
-
-</div>
-    <h2>
-        📄 Generated Summary
-    </h2>
-
-    <br>
-
-    <p id="summaryText">
-        {{ summary }}
-    </p>
-
-    <button
-        type="button"
-        class="copy-btn"
-        onclick="copySummary()">
-
-        📋 Copy Summary
-
-    </button>
-    <button
-        type="button"
-        class="copy-btn"
-        onclick="downloadSummary()">
-
-        📥 Download TXT
-
-    </button>
-    <button
-        type="button"
-        class="copy-btn"
-        onclick="window.location='/download-pdf'">
-
-        📄 Download PDF
-
-    </button>
-    <button
-        type="button"
-        class="copy-btn"
-        onclick="window.location='/download-audio'">
-
-        🔊 Listen Summary
-
-    </button>
-    <button
-        type="button"
-        class="copy-btn"
-        onclick="window.location='/download-docx'">
-
-    📄 Download DOCX
-
-    </button>
-    <button
-        type="button"
-        class="copy-btn"
-        onclick="window.location='/download-md'">
-
-    📝 Download Markdown
-
-    </button>
-    <button
-        type="button"
-        class="copy-btn"
-        onclick="window.location='/send-email'">
-
-    📧 Email Summary
-
-    </button>
-
-<div class="card">
-
-<h2>🧠 AI Mind Map</h2>
-
-<div class="mindmap-wrapper">
-    <div id="mindmap">
-        {{ mindmap }}
-    </div>
-</div>
-
-</div>
-
-<div class="important-sentences">
-
-    <h3>⭐ Important Sentences</h3>
-
-    <ul>
-
-        {% for sentence in important_sentences %}
-
-        <li>{{ sentence }}</li>
-
-        {% endfor %}
-
-    </ul>
-
-</div>
-
-{% endif %}
-
-{% if summaries %}
-
-<div class="card">
-
-    <h2>
-        📚 Summary History
-    </h2>
-
-    <input
-    type="text"
-    id="searchHistory"
-    placeholder="Search summaries...">
-
-    {% for item in summaries %}
-
-    <div class="history-card">
-
-        <h4>
-           📄 Summary #{{ item.id }}
-        </h4>
-
-        <small>
-            {{ item.created_at }}
-        </small>
+        </p>
 
         <p>
-            {{ item.summary_text }}
+            Words Saved:
+            {{ words_saved }}
         </p>
-        <br>
 
-        <form action="/delete/{{ item.id }}" method="POST" style="display:inline;">
-            <button type="submit" onclick="return confirm('Delete this summary?')">
-                Delete
-            </button>
-        </form>
+        <p>
+            Compression Rate:
+            {{ compression_rate }}%
+        </p>
+
+        <h2>Your Statistics</h2>
+
+        <p>
+            Total Summaries:
+            {{ summaries|length }}
+        </p>
+        <p>
+            Username:
+            {{ current_user.username }}
+        </p>
+
+        <p>
+            Email:
+            {{ current_user.email }}
+        </p>
     </div>
 
-    {% endfor %}
+    <div class="card">
 
-</div>
-<div class="card">
+        <h1>Generate AI Summary</h1>
 
-<h2>
-💬 Chat With Document
-</h2>
+        <br>
 
-<form action="/ask-document" method="POST">
+        <form action="/summarize" method="POST" enctype="multipart/form-data" id="summaryForm">
 
-<input
-    type="text"
-    name="question"
-    placeholder="Ask anything about your document">
+            <label>Upload Document</label>
 
-<button type="submit">
+            <input type="file" name="file" accept=".pdf,.docx,.txt,.pptx">
 
-Ask AI
+            <br><br>
 
-</button>
+            <label>Summary Length</label>
 
-</form>
+            <label>
+                Upload Image
+            </label>
 
-</div>
+            <input type="file" name="image" accept=".jpg,.jpeg,.png">
 
-{% endif %}
+            <select name="summary_type">
 
-<div class="card">
+                <option value="executive">
+                    Executive Summary
+                </option>
 
-<h2>
-🧠 Flashcards
-</h2>
+                <option value="bullet">
+                    Bullet Points
+                </option>
 
-{% for card in flashcards %}
+                <option value="research">
+                    Research Summary
+                </option>
 
-<div class="flashcard">
+                <option value="student">
+                    Student Notes
+                </option>
 
-<b>Q:</b> {{ card.question }}
+                <option value="meeting">
+                    Meeting Notes
+                </option>
 
-<br>
+                <option value="action">
+                    Action Items
+                </option>
 
-<b>A:</b> {{ card.answer }}
+            </select>
 
-</div>
+            <br><br>
 
-{% endfor %}
+            <textarea id="textInput" name="text" rows="10"
+                placeholder="Paste your article, blog, report, document or notes here..." required></textarea>
+            <div class="counter">
 
-</div>
-</div>
+                Estimated Reading Time:
+                <span id="readingTime">
+                    0
+                </span>
+                min
+
+            </div>
+
+            <div class="counter">
+                Characters:
+                <span id="charCount">0</span>
+            </div>
+            <div class="counter">
+
+                Words:
+                <span id="wordCount">0</span>
+
+            </div>
+
+            <br>
+            <label>Translate To</label>
+
+            <select name="language">
+
+                <option value="en">
+                    English
+                </option>
+
+                <option value="hi">
+                    Hindi
+                </option>
+
+                <option value="te">
+                    Telugu
+                </option>
+
+                <option value="ta">
+                    Tamil
+                </option>
+
+                <option value="fr">
+                    French
+                </option>
+
+                <option value="de">
+                    German
+                </option>
+
+            </select>
+
+            <br><br>
+            <button type="submit">
+                ✨ Generate Summary
+            </button>
+
+            <div class="spinner" id="spinner">
+
+                <div class="loader"></div>
+
+                <p>
+                    AI is generating your summary...
+                </p>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    {% if score %}
+
+    <div class="card">
+
+        <h3>
+            🏆 Quality Score:
+            {{ score }}/100
+
+            <br>
+
+            📚 Readability:
+            {{ readability }}/100
+
+            <br>
+
+            📉 Compression:
+            {{ compression_rate }}%
+        </h3>
+
+    </div>
+
+    <div class="card">
+
+        <h2>
+            👤 User Profile
+        </h2>
+
+        <p>
+            Username:
+            {{ current_user.username }}
+        </p>
+
+        <p>
+            Email:
+            {{ current_user.email }}
+        </p>
+
+        <p>
+            Joined:
+            {{ current_user.created_at }}
+        </p>
+
+    </div>
+
+    {% endif %}
+
+    {% if summary %}
+
+    <div class="summary-box">
+        <div class="keywords">
+
+            <h3>
+                🔑 Keywords
+            </h3>
+
+            <ul>
+
+                {% for keyword in keywords %}
+
+                <li>{{ keyword }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        <div class="important-sentences">
+
+            <h3>
+                ⭐ Important Sentences
+            </h3>
+
+            <ul>
+
+                {% for sentence in important_sentences %}
+
+                <li>{{ sentence }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+        <h2>
+            📄 Generated Summary
+        </h2>
+
+        <br>
+
+        <p id="summaryText">
+            {{ summary }}
+        </p>
+
+        <button type="button" class="copy-btn" onclick="copySummary()">
+
+            📋 Copy Summary
+
+        </button>
+        <button type="button" class="copy-btn" onclick="downloadSummary()">
+
+            📥 Download TXT
+
+        </button>
+        <button type="button" class="copy-btn" onclick="window.location='/download-pdf'">
+
+            📄 Download PDF
+
+        </button>
+        <button type="button" class="copy-btn" onclick="window.location='/download-audio'">
+
+            🔊 Listen Summary
+
+        </button>
+        <button type="button" class="copy-btn" onclick="window.location='/download-docx'">
+
+            📄 Download DOCX
+
+        </button>
+        <button type="button" class="copy-btn" onclick="window.location='/download-md'">
+
+            📝 Download Markdown
+
+        </button>
+        <button type="button" class="copy-btn" onclick="window.location='/send-email'">
+
+            📧 Email Summary
+
+        </button>
+
+        <div class="card">
+
+            <h2>🧠 AI Mind Map</h2>
+
+            <div class="mindmap-wrapper">
+                <div id="mindmap">
+                    {{ mindmap }}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="important-sentences">
+
+            <h3>⭐ Important Sentences</h3>
+
+            <ul>
+
+                {% for sentence in important_sentences %}
+
+                <li>{{ sentence }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+        {% endif %}
+
+        {% if summaries %}
+
+        <div class="card">
+
+            <h2>
+                📚 Summary History
+            </h2>
+
+            <input type="text" id="searchHistory" placeholder="Search summaries...">
+
+            {% for item in summaries %}
+
+            <div class="history-card">
+
+                <h4>
+                    📄 Summary #{{ item.id }}
+                </h4>
+
+                <small>
+                    {{ item.created_at }}
+                </small>
+
+                <p>
+                    {{ item.summary_text }}
+                </p>
+                <br>
+
+                <form action="/delete/{{ item.id }}" method="POST" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Delete this summary?')">
+                        Delete
+                    </button>
+                </form>
+            </div>
+
+            {% endfor %}
+
+        </div>
+        <div class="card">
+
+            <h2>
+                💬 Chat With Document
+            </h2>
+
+            <form action="/ask-document" method="POST">
+
+                <input type="text" name="question" placeholder="Ask anything about your document">
+
+                <button type="submit">
+
+                    Ask AI
+
+                </button>
+
+            </form>
+
+        </div>
+
+        {% endif %}
+
+        <div class="card">
+
+            <h2>
+                🧠 Flashcards
+            </h2>
+
+            {% for card in flashcards %}
+
+            <div class="flashcard">
+
+                <b>Q:</b> {{ card.question }}
+
+                <br>
+
+                <b>A:</b> {{ card.answer }}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
 
 <div class="footer">
+  <p className="text-slate-400">
+    Built with Spring Boot, Next.js, TypeScript, and Tailwind CSS
+  </p>
 
-AI Text Summarizer • Powered by Flask & Transformers
+  <p className="text-sm text-slate-500 mt-2">
+    Designed & Developed by Dhanyasree Gopinigari
+  </p>
+  
+  <p className="text-sm text-slate-600 mt-2">
+    © 2026 AI Summarizer. All rights reserved.
+  </p>
+</div>>
 
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-</div>
+    </body>
 
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
-</body>
 </html>
- 

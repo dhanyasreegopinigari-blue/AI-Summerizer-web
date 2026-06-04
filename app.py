@@ -36,6 +36,7 @@ import yake
 summarizer = None
 import torch
 torch.set_num_threads(1) 
+torch.set_num_interop_threads(1)
 
 from config import Config
 from models import db, User, Summary
@@ -47,7 +48,8 @@ import io
 app = Flask(__name__)
 app.config.from_object(Config)
 
-mail = Mail(app)
+mail = Mail()
+mail.init_app(app)
 
 db.init_app(app)
 
@@ -69,7 +71,7 @@ def get_summarizer():
     if summarizer is None:
         summarizer = pipeline(
             "summarization",
-            model="sshleifer/distilbart-cnn-6-6",
+            model="Falconsai/text_summarization",
             device=-1
     )
 
